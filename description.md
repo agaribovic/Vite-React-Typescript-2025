@@ -1,0 +1,1 @@
+This small web app features create, read, update, and delete (CRUD) functionality for posts, along with additional features like dynamic and static styles and effects. The goal was to combine Vite, the React library, and TypeScript, while keeping up with the latest front-end trends in 2025.
