@@ -26,25 +26,26 @@ const Posts: React.FC<PostsProps> = ({ postColor, query, newPosts }) => {
   const { posts, loading } = GetPosts();
   const { opacity, deletePost } = useDeletePost();
   const { editPost, postTitles } = useEditPost();
-  
+
   const [strikethroughPosts, setStrikethroughPosts] = useState<{ [key: number]: boolean }>({});
   const toggleStrikethrough = (postId: number) => {
     setStrikethroughPosts((prev) => ({
       ...prev,
-      [postId]: !prev[postId], 
+      [postId]: !prev[postId],
     }));
   };
 
-  const filteredPosts = [...newPosts, ...posts].filter((post) =>
-    post.title.toLowerCase().includes(query.toLowerCase())
-  );
+  const filteredPosts = [...newPosts, ...posts].filter((post) => {
+    const postTitle = postTitles[post.id] || post.title;
+    return postTitle.toLowerCase().includes(query.toLowerCase());
+  });
 
-  const postsPerPage = 5; 
+  const postsPerPage = 5;
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
   const startIndex = (currentPage - 1) * postsPerPage;
   const currentPosts = filteredPosts.slice(startIndex, startIndex + postsPerPage);
-  
+
   return (
     <>
       {loading ? (<p>Loading...</p>) :
@@ -67,30 +68,30 @@ const Posts: React.FC<PostsProps> = ({ postColor, query, newPosts }) => {
                     onClick={() => toggleStrikethrough(post.id)}
                   >
                     {post.body}
-                  </p>            
-                    <EditButton
-                      postId={post.id}
-                      currentTitle={postTitles[post.id] || post.title} 
-                      editPost={editPost}
+                  </p>
+                  <EditButton
+                    postId={post.id}
+                    currentTitle={postTitles[post.id] || post.title}
+                    editPost={editPost}
                   />
                   <DeleteButton onClick={() => deletePost(post.id)} />
                 </div>
               ))}
             <div className="pagination" style={{ textAlign: "center" }}>
-              <button 
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))} 
+              <button
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}>Previous
               </button>
               <span> Page {currentPage} of {totalPages} </span>
-              <button 
-                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))} 
+              <button
+                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                 disabled={currentPage === totalPages}
               >
                 Next
-            </button>
+              </button>
+            </div>
           </div>
-        </div>
-          
+
         )}
     </>
   )
